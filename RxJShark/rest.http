@@ -1,0 +1,37 @@
+@baseUrl = http://192.168.130.142:3000/
+@arenaId = 7YY-XYY-YYYT
+@playerId = 7a34300f-446c-4119-b3e3-df03d67c25ad
+
+get {{baseUrl}}public-arenas
+
+###
+
+get {{baseUrl}}development/arena/{{arenaId}}/state
+
+###
+
+get {{baseUrl}}arena/{{arenaId}}/settings
+
+###
+
+post {{baseUrl}}arena/create
+Content-Type: application/json
+
+{
+    "arenaType": "development",
+    "countdownToStart": 100,
+    "gameLength": 42000,
+    "players": []
+}
+
+###
+
+post {{baseUrl}}arena/{{arenaId}}/create-players
+Content-Type: application/json
+
+{
+    "sharkName": "Bruce"
+}
+
+###
+delete {{baseUrl}}arena/{{arenaId}}/remove-player/{{playerId}}
