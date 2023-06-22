@@ -1,6 +1,6 @@
 @baseUrl = http://192.168.130.142:3000/
-@arenaId = 7YY-XYY-YYYT
-@playerId = 7a34300f-446c-4119-b3e3-df03d67c25ad
+@arenaId = JYY-WYY-YYYK
+@playerId = 4e7db76c-81ff-4226-a0c6-ed1fba8e6090
 
 get {{baseUrl}}public-arenas
 
@@ -30,8 +30,24 @@ post {{baseUrl}}arena/{{arenaId}}/create-players
 Content-Type: application/json
 
 {
-    "sharkName": "Bruce"
+    "sharkName": "RxJShark"
 }
 
 ###
 delete {{baseUrl}}arena/{{arenaId}}/remove-player/{{playerId}}
+
+###
+
+put {{baseUrl}}development/tweak
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "maxDeathTimePenalty": 12,
+    "torpedoRegenFrequency": 1,
+    "laserEnergyToll": 0,
+    "laserHitHealthToll": -1,
+    "maxEnergy": 100,
+    "maxHealth": 2000,
+    "pointsPerLivingBeat": 1
+}

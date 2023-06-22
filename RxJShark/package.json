@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "ts-node-esm ./src/index.ts",
-        "compile-trace": "tsc --traceResolution"
+        "startmon": "nodemon"
     },
     "keywords": [],
     "author": "",
@@ -17,8 +17,9 @@
     },
     "devDependencies": {
         "@types/node": "^20.3.1",
-        "tslib": "^2.5.3",
+        "nodemon": "^2.0.22",
         "ts-node": "^10.9.1",
+        "tslib": "^2.5.3",
         "typescript": "^5.1.3"
     }
 }

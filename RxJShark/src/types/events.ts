@@ -13,7 +13,7 @@ export type BeatEvent =
     | TorpedoLostEvent
     | WideScanExecutedEvent;
 
-type DeadBeatUpdate = {
+export type DeadBeatUpdate = {
     sharkId: TransId;
     gameTime: number;
     isAlive: 'no';
@@ -21,14 +21,14 @@ type DeadBeatUpdate = {
     events: BeatEvent[];
 };
 
-type DamageTakenEvent = {
+export type DamageTakenEvent = {
     event: 'damageTakenEvent';
     health: number;
     energy: number;
     source: DamageSource;
 };
 
-type LaserFiredEvent = {
+export type LaserFiredEvent = {
     event: 'laserFiredEvent';
     firingSharkId: TransId;
     commandId: TransId;
@@ -40,7 +40,7 @@ type LaserFiredEvent = {
     sharkHit: BasicShark | null;
 };
 
-type NarrowScanExecutedEvent = {
+export type NarrowScanExecutedEvent = {
     event: 'narrowScanExecutedEvent';
     commandId: TransId;
     scanFromX: number;
@@ -50,27 +50,27 @@ type NarrowScanExecutedEvent = {
     torpedoes: ScannedTorpedo[];
 };
 
-type ProximityAlarmEvent = {
+export type ProximityAlarmEvent = {
     event: 'proximityAlarmEvent';
 };
 
-type ScanDetectedEvent = {
+export type ScanDetectedEvent = {
     event: 'scanDetectedEvent';
     sourcePositionX: number;
     sourcePositionY: number;
 };
 
-type SharkDestroyedEvent = {
+export type SharkDestroyedEvent = {
     event: 'sharkDestroyedEvent';
     shark: BasicShark;
 };
 
-type SharkRespawnedEvent = {
+export type SharkRespawnedEvent = {
     event: 'sharkRespawnedEvent';
     shark: BasicShark;
 };
 
-type TorpedoDetonatedEvent = {
+export type TorpedoDetonatedEvent = {
     event: 'torpedoDetonatedEvent';
     commandId: TransId;
     firingSharkId: string;
@@ -80,14 +80,14 @@ type TorpedoDetonatedEvent = {
     pointsScored: number;
 };
 
-type TorpedoLostEvent = {
+export type TorpedoLostEvent = {
     event: 'torpedoLostEvent';
     commandId: TransId;
     lastKnownPositionX: number;
     lastKnownPositionY: number;
 };
 
-type WideScanExecutedEvent = {
+export type WideScanExecutedEvent = {
     event: 'wideScanExecutedEvent';
     commandId: TransId;
     scanningSharkId: TransId;
@@ -95,6 +95,12 @@ type WideScanExecutedEvent = {
     centerPointY: number;
     sharks: ScannedShark[];
     torpedoes: ScannedTorpedo[];
+};
+
+export type CommandUpdate = {
+    commandId: TransId;
+    status: any; // commandStatus, not sure what that is yet
+    message: string | null;
 };
 
 // Related Entities

@@ -1,5 +1,5 @@
-import { arenaId, playerId } from '../config';
-import { MySocket } from '../types/generic';
+import { arenaId, playerId } from '../config.ts';
+import { socket } from '../index.ts';
 import { BeatUpdate } from '../types/updates';
 
 const sharkIsOutOfBounds = (x: number, y: number) => {
@@ -15,14 +15,38 @@ const sharkIsOutOfBounds = (x: number, y: number) => {
     return xIsOutOfBounds || yIsOutOfBounds;
 };
 
-const moveSharkInBounds = (socket: MySocket) => {
-    socket.emit('setFinSpeed', arenaId, playerId, -5, -5);
+const moveSharkInBounds = (beatUpdate: BeatUpdate) => {
+    socket.emit('setFinSpeed', arenaId, playerId, -5, -5, console.log);
 };
 
-const useBoundaryDetection = (socket: MySocket) => (beatUpdate: BeatUpdate) => {
-    const { positionX: sharkX, positionY: sharkY } = beatUpdate;
+const sharkIsNearBorder = (x: number, y: number) => {
+    const buffer = 50;
+    const dimensions = {
+        width: 800,
+        height: 600,
+    };
 
-    while (sharkIsOutOfBounds(sharkX, sharkY)) {
-        moveSharkInBounds(socket);
+    const isCloseToX = dimensions.width - x < buffer;
+    const isCloseToY = Math.abs(y - dimensions.height) < buffer;
+
+    return isCloseToX || isCloseToY;
+};
+
+const stopShark = () => {
+    socket.emit('setFinSpeed', arenaId, playerId, 0, 0, console.log);
+};
+
+export const useBoundaryDetection = (beatUpdate: BeatUpdate) => {
+    const { positionX, positionY } = beatUpdate;
+
+    if (sharkIsOutOfBounds(positionX, positionY)) {
     }
+
+    if (sharkIsNearBorder(positionX, positionY)) {
+        stopShark();
+    }
+    // while (sharkIsNearBorder(positionX, positionY)) {
+    //     // stopShark(socket);
+    //     moveSharkInBounds();
+    // }
 };
