@@ -1,6 +1,7 @@
 @baseUrl = http://192.168.130.142:3000/
-@arenaId = JYY-WYY-YYYK
-@playerId = 4e7db76c-81ff-4226-a0c6-ed1fba8e6090
+@arenaId = VYY-XYY-YYYB
+@playerId = f36ff446-96f8-4c91-bb46-cdc75476d0dd
+@sharkId = 0000-0008
 
 get {{baseUrl}}public-arenas
 
@@ -47,7 +48,47 @@ Content-Type: application/json
     "torpedoRegenFrequency": 1,
     "laserEnergyToll": 0,
     "laserHitHealthToll": -1,
-    "maxEnergy": 100,
-    "maxHealth": 2000,
+    "maxEnergy": 60,
+    "maxHealth": 100,
     "pointsPerLivingBeat": 1
+}
+
+###
+
+post {{baseUrl}}development/marker
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "lifeSpan": 1000,
+    "x": 50,
+    "y": 550
+}
+
+###
+
+post {{baseUrl}}development/marker
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "lifeSpan": 100000,
+    "x": 750,
+    "y": 550
+}
+
+###
+put {{baseUrl}}development/sharks/position
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "sharks": [
+        {
+            "sharkId": "{{sharkId}}",
+            "centerPointX": 50,
+            "centerPointY": 50,
+            "facingAngle": 4.36
+        }
+    ]
 }

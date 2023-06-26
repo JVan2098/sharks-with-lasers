@@ -1,5 +1,4 @@
-import { arenaId, playerId } from '../config.ts';
-import { socket } from '../index.ts';
+import { arenaId, playerId, socket } from '../config.ts';
 import { BeatUpdate } from '../types/updates';
 
 const sharkIsOutOfBounds = (x: number, y: number) => {
