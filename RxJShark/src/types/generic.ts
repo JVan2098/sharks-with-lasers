@@ -16,6 +16,11 @@ export type FinSpeed = {
     starboard: number;
 };
 
+export type BasicShark = {
+    id: TransId;
+    name: string;
+};
+
 export type ArenaSettings = {
     arenaId: ArenaId;
     type: 'development' | 'private' | 'public' | 'official';

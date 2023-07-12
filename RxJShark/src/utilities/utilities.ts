@@ -20,36 +20,6 @@ export const getArenaSettings = () =>
 
 // Other utilities
 
-// export const getRandomInt = (max: number) => Math.floor(Math.random() * max);
-
-// export const getAngleToTarget = (source: Point, target: Point) => {
-//     const trueNorthSharkVector = {
-//         pointOne: { x: source.x, y: source.y },
-//         pointTwo: { x: source.x, y: source.y + 100 },
-//     };
-//     const vectorToPoint = {
-//         pointOne: { x: source.x, y: source.y },
-//         pointTwo: { x: target.x, y: target.y },
-//     };
-
-//     const vOneDeltaX =
-//         trueNorthSharkVector.pointTwo.x - trueNorthSharkVector.pointOne.x;
-//     const vTwoDeltaX = vectorToPoint.pointTwo.x - vectorToPoint.pointOne.x;
-//     const vOneDeltaY =
-//         trueNorthSharkVector.pointTwo.y - trueNorthSharkVector.pointOne.y;
-//     const vTwoDeltaY = vectorToPoint.pointTwo.y - vectorToPoint.pointOne.y;
-
-//     const divisor = vOneDeltaX * vTwoDeltaX + vOneDeltaY * vTwoDeltaY;
-//     const dividend =
-//         Math.sqrt(Math.pow(vOneDeltaX, 2) + Math.pow(vOneDeltaY, 2)) *
-//         Math.sqrt(Math.pow(vTwoDeltaX, 2) + Math.pow(vTwoDeltaY, 2));
-//     const angle = Math.acos(divisor / dividend);
-
-//     return angle;
-
-//     // return target.x - source.x >= 0 ? angle : -angle;
-// };
-
 export const getDistanceToPoint = (source: Point, target: Point) => {
     return Math.sqrt(
         Math.pow(target.x - source.x, 2) + Math.pow(target.y - source.y, 2)
@@ -89,6 +59,10 @@ export function calculateAngleDifference(source: number, target: number) {
 
 export const getSharkPosition = (beatUpdate: BeatUpdate): Point => {
     return { x: beatUpdate.positionX, y: beatUpdate.positionY };
+};
+
+export const sharkIsAlive = (beatUpdate: BeatUpdate) => {
+    return beatUpdate.isAlive === 'yes';
 };
 
 export const sharkIsMoving = (beatUpdate: BeatUpdate): boolean => {

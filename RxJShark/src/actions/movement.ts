@@ -2,6 +2,42 @@ import { arenaId, playerId, socket } from '../config.ts';
 import { FinSpeed, Point } from '../types/generic.ts';
 import { BeatUpdate } from '../types/updates.ts';
 import {
+    maxDistanceInOneBeat,
+    maxRadiansTurnedPerBeat,
+} from '../utilities/constants.ts';
+import {
+    PointAlpha,
+    PointBeta,
+    PointDelta,
+    PointEpsilon,
+    PointEta,
+    PointGamma,
+    PointIota,
+    PointKappa,
+    PointLambda,
+    PointMu,
+    PointNu,
+    PointOmicron,
+    PointPi,
+    PointRho,
+    PointSigma,
+    PointTau,
+    PointTheta,
+    PointUpsilon,
+    PointXi,
+    PointZeta,
+    bottomCenter,
+    bottomLeftCorner,
+    bottomRightCorner,
+    center,
+    leftCenter,
+    rightCenter,
+    topLeftCorner,
+    topRightCorner,
+    verifyTargetLocation,
+} from '../utilities/locations.ts';
+import { placePathMarker } from '../utilities/pathing.ts';
+import {
     calculateAngleDifference,
     calculateAngleToPoint,
     getDistanceToPoint,
@@ -9,106 +45,70 @@ import {
     sharkIsMoving,
 } from '../utilities/utilities.ts';
 
-const dimensions = {
-    width: 800,
-    height: 600,
-};
-const buffer = 32;
-const marginLeft = buffer;
-const marginRight = dimensions.width - buffer;
-const marginTop = dimensions.height - buffer;
-const marginBottom = buffer;
-const xMiddle = dimensions.width / 2;
-const yMiddle = dimensions.height / 2;
-
-const pathingPoints: { name: string; point: Point }[] = [
-    {
-        name: 'bottomCenter',
-        point: {
-            x: xMiddle,
-            y: marginBottom,
-        },
-    },
-    {
-        name: 'bottomRightCorner',
-        point: {
-            x: marginRight,
-            y: marginBottom,
-        },
-    },
-    {
-        name: 'rightCenter',
-        point: {
-            x: marginRight,
-            y: yMiddle,
-        },
-    },
-    {
-        name: 'topRightCorner',
-        point: {
-            x: marginRight,
-            y: marginTop,
-        },
-    },
-    {
-        name: 'topCenter',
-        point: {
-            x: xMiddle,
-            y: marginTop,
-        },
-    },
-    {
-        name: 'topLeftCorner',
-        point: {
-            x: marginLeft,
-            y: marginTop,
-        },
-    },
-    {
-        name: 'leftCenter',
-        point: {
-            x: marginLeft,
-            y: yMiddle,
-        },
-    },
-    {
-        name: 'bottomLeftCorner',
-        point: {
-            x: marginLeft,
-            y: marginBottom,
-        },
-    },
+const pathingPoints: Point[] = [
+    bottomCenter,
+    bottomRightCorner,
+    topLeftCorner,
+    topRightCorner,
+    center,
+    rightCenter,
+    bottomCenter,
+    leftCenter,
+    bottomLeftCorner,
 ];
 
-// let pathPointIndex = 0;
-let pathPointIndex = 5;
+const attackPathingPoints: Point[] = [
+    PointAlpha,
+    PointBeta,
+    PointGamma,
+    PointDelta,
+    PointEpsilon,
+    PointZeta,
+    PointEta,
+    PointTheta,
+    PointIota,
+    PointKappa,
+    PointLambda,
+    PointMu,
+    PointNu,
+    PointXi,
+    PointOmicron,
+    PointPi,
+    PointRho,
+    PointSigma,
+    PointTau,
+    PointUpsilon,
+];
+
+let pathPointIndex = 0;
+
+const currentPath = attackPathingPoints;
 
 export const moveAlongPath = (beatUpdate: BeatUpdate) => {
-    // if (arenaSettings) {
-    //     const settings = arenaSettings;
-    // }
     const sharkPosition = getSharkPosition(beatUpdate);
-    const currentTarget = pathingPoints[pathPointIndex];
+    const currentTarget = currentPath[pathPointIndex];
+    const verifiedTarget = verifyTargetLocation(currentTarget);
 
-    const maxDistanceInOneBeat = 12;
+    if (beatUpdate.gameTime % 12 === 0) {
+        placePathMarker(verifiedTarget);
+    }
 
-    const distanceToTarget = getDistanceToPoint(sharkPosition, currentTarget.point);
-    const angleToTarget = calculateAngleToPoint(sharkPosition, currentTarget.point);
+    const distanceToTarget = getDistanceToPoint(sharkPosition, verifiedTarget);
+    const angleToTarget = calculateAngleToPoint(sharkPosition, verifiedTarget);
     const angleDifference = calculateAngleDifference(
         beatUpdate.facing,
         angleToTarget
     );
 
-    if (distanceToTarget < 0.01) {
+    if (distanceToTarget < 0.001) {
         if (sharkIsMoving(beatUpdate)) {
             stopShark();
         }
         pathPointIndex =
-            pathPointIndex === pathingPoints.length - 1 ? 0 : pathPointIndex + 1;
+            pathPointIndex === currentPath.length - 1 ? 0 : pathPointIndex + 1;
     } else if (Math.abs(angleDifference) > 0.001) {
         const newFinSpeeds = calculateFinSpeedToTurn(angleDifference);
         turnShark(newFinSpeeds);
-        // adjustSharkDirection(sharkPosition, topLeftCorner.point);
     } else if (distanceToTarget >= maxDistanceInOneBeat) {
         if (beatUpdate.portFinSpeedActual !== 6) {
             moveSharkForward(6);
@@ -118,13 +118,37 @@ export const moveAlongPath = (beatUpdate: BeatUpdate) => {
     }
 };
 
-// export const adjustSharkDirection = (sharkPosition: Point, target: Point) => {
-//     const angleDifference = getAngleToPoint(sharkPosition, target);
-//     console.log('desired angle', angleDifference);
-//     const newFinSpeeds = calculateFinSpeedToTurn(angleDifference);
-//     console.log('newFinSpeeds', newFinSpeeds);
-//     turnShark(newFinSpeeds);
-// };
+export const moveTowardTarget = (target: Point) => (beatUpdate: BeatUpdate) => {
+    const sharkPosition = getSharkPosition(beatUpdate);
+    const verifiedTarget = verifyTargetLocation(target);
+
+    const distanceToTarget = getDistanceToPoint(sharkPosition, verifiedTarget);
+    const angleToTarget = calculateAngleToPoint(sharkPosition, verifiedTarget);
+    const angleDifference = calculateAngleDifference(
+        beatUpdate.facing,
+        angleToTarget
+    );
+
+    if (distanceToTarget < 0.001) {
+        if (sharkIsMoving(beatUpdate)) {
+            stopShark();
+        }
+    } else if (Math.abs(angleDifference) > 0.001) {
+        const newFinSpeeds = calculateFinSpeedToTurn(angleDifference);
+        if (
+            beatUpdate.portFinSpeedActual !== newFinSpeeds.port ||
+            beatUpdate.starboardFinSpeedActual !== newFinSpeeds.starboard
+        ) {
+            turnShark(newFinSpeeds);
+        }
+    } else if (distanceToTarget >= maxDistanceInOneBeat) {
+        if (beatUpdate.portFinSpeedActual !== 6) {
+            moveSharkForward(6);
+        }
+    } else {
+        moveSharkForward(distanceToTarget / 2);
+    }
+};
 
 export const moveSharkForward = (speed: number) => {
     // TODO: Get different speeds based on different situations?
@@ -142,12 +166,11 @@ export const stopShark = () => {
 export const calculateFinSpeedToTurn = (angleDifference: number) => {
     const turnRight = angleDifference > 0;
     const usefulAngle = Math.abs(angleDifference);
-    // const maxRadiansPerBeat = 1.1; 6, -5
-    const maxRadiansPerBeat = 1; // 5, -5
+
     const radianScalingFactor = 10;
     const numberOfSpeeds = 2;
 
-    if (usefulAngle >= maxRadiansPerBeat) {
+    if (usefulAngle >= maxRadiansTurnedPerBeat) {
         return turnRight ? { port: 5, starboard: -5 } : { port: -5, starboard: 5 };
     }
 

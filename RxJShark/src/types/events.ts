@@ -1,7 +1,6 @@
 import { TransId } from './generic';
 
 export type BeatEvent =
-    | DeadBeatUpdate
     | DamageTakenEvent
     | LaserFiredEvent
     | NarrowScanExecutedEvent

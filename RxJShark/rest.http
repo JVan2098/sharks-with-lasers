@@ -1,7 +1,7 @@
 @baseUrl = http://192.168.130.142:3000/
-@arenaId = VYY-XYY-YYYB
-@playerId = f36ff446-96f8-4c91-bb46-cdc75476d0dd
-@sharkId = 0000-0008
+@arenaId = 9YY-YYY-YYY8
+@playerId = f946a9eb-585b-4498-a281-62f69662e01e
+@sharkId = 0000-000*
 
 get {{baseUrl}}public-arenas
 
@@ -14,7 +14,7 @@ get {{baseUrl}}development/arena/{{arenaId}}/state
 get {{baseUrl}}arena/{{arenaId}}/settings
 
 ###
-
+#Create Arena
 post {{baseUrl}}arena/create
 Content-Type: application/json
 
@@ -26,7 +26,7 @@ Content-Type: application/json
 }
 
 ###
-
+# Create Player
 post {{baseUrl}}arena/{{arenaId}}/create-players
 Content-Type: application/json
 
@@ -35,10 +35,11 @@ Content-Type: application/json
 }
 
 ###
+# Remove Shark
 delete {{baseUrl}}arena/{{arenaId}}/remove-player/{{playerId}}
 
 ###
-
+# Tweak Arena
 put {{baseUrl}}development/tweak
 Content-Type: application/json
 
@@ -48,13 +49,11 @@ Content-Type: application/json
     "torpedoRegenFrequency": 1,
     "laserEnergyToll": 0,
     "laserHitHealthToll": -1,
-    "maxEnergy": 60,
-    "maxHealth": 100,
     "pointsPerLivingBeat": 1
 }
 
 ###
-
+# Create Marker (top left)
 post {{baseUrl}}development/marker
 Content-Type: application/json
 
@@ -66,7 +65,7 @@ Content-Type: application/json
 }
 
 ###
-
+# Create Marker (top right)
 post {{baseUrl}}development/marker
 Content-Type: application/json
 
@@ -78,6 +77,19 @@ Content-Type: application/json
 }
 
 ###
+# Create Marker (where I want to test)
+post {{baseUrl}}development/marker
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "lifeSpan": 2000,
+    "x": 600,
+    "y": 100
+}
+
+###
+# Set Shark Position
 put {{baseUrl}}development/sharks/position
 Content-Type: application/json
 
@@ -86,9 +98,19 @@ Content-Type: application/json
     "sharks": [
         {
             "sharkId": "{{sharkId}}",
-            "centerPointX": 50,
-            "centerPointY": 50,
+            "centerPointX": 0,
+            "centerPointY": 0,
             "facingAngle": 4.36
         }
     ]
+}
+
+###
+# Kill Shark
+post {{baseUrl}}development/sharks/make-dead
+Content-Type: application/json
+
+{
+    "arenaId": "{{arenaId}}",
+    "sharkIds": ["{{sharkId}}"]
 }
